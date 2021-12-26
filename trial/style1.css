@@ -1,0 +1,620 @@
+
+
+html, body {
+    background-color: #FDECE3;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Open Sans";
+}
+h1, h2, h3, h4, h5 {
+    margin-top: 0.4em;
+    margin-bottom: 0.3em;
+}
+
+h2, h3, h4, p {
+    color: #ffffff;
+}
+
+h5 {
+    color:#000000;
+}
+
+h1 {
+    color: #000000;
+}
+
+.emphasis-color {
+    color: #F1F2D8;
+}
+
+.emphasis-color-multiply {
+    color: #F1F2D8;
+}
+
+.error-color {
+    color: #d54;
+}
+
+a {
+    color: #444;
+    font-weight: bold;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+h2, h3, h4, h5 {
+    font-weight: normal;
+}
+
+dl {
+    color: #555;
+}
+dl dd {
+    font: 15px "Open Sans", Helvetica, sans-serif;
+    margin-bottom: 1em;
+    margin-left: 1em;
+    width: 40%;
+}
+
+select {
+    font-family: Open Sans;
+    border-radius: 5px;
+}
+
+.container {
+    margin-right: 3em;
+    margin-left: 3em;
+    margin-bottom: 10em;
+    padding: 20px 0 0 0;
+    background-color: #FDECE3;
+    display: flex;
+    flex-direction: column;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+button {
+    height: 40px;
+    line-height: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 30px;
+    padding-right: 30px;
+    color: #FDECE3;
+    background-color: #000000;
+    border: 0px solid #FDECE3;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-family: Open Sans;
+
+}
+
+button.right {
+    margin-left: 5px;
+    margin-right: 0;
+    /*position: absolute;*/
+    top: 14em;
+    right: 14em;
+    border: 2px solid #35383D;
+}
+
+.blink {
+    animation: blink 0.5s steps(3, start) infinite;
+    -webkit-animation: blink 0.5s steps(3, start) infinite;
+}
+@keyframes blink {
+    to { visibility: hidden; }
+}
+@-webkit-keyframes blink {
+    to { visibility: hidden; }
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.faded {
+    opacity: 0.4;
+}
+
+#save_message, #fitness_message {
+    color: #555;
+    font-size: 12px;
+    line-height: 30px;
+    margin: 0 20px;
+}
+
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.header {
+    height: 60px;
+}
+
+.header h1 {
+    line-height: 50px;
+    margin: 0;
+    padding: 0;
+}
+
+.header a {
+    display: inline-block;
+    margin-left: 15px;
+    font-size: 20px;
+    line-height: 50px;
+    padding: 0 4px;
+}
+
+
+.timescale_decrease, .timescale_increase {
+    padding: 4px;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.timescale_increase {
+    margin-right: 10px;
+}
+
+
+.codestatus {
+    padding-top: 10px;
+}
+
+.CodeMirror {
+    font: 12px Consolas, Monaco, monospace;
+    width: 100%;
+    margin: 0;
+    height: 318px;
+    float: left;
+    margin-left: 0;
+    position: relative;
+}
+
+/* #codem {
+    visibility: hidden;
+}
+*/
+
+.world {
+    position: relative;
+    width: 100%;
+    background-color: #000000;
+    padding: 0;
+    display: flex;
+    /*overflow: hidden;*/
+}
+
+/*.innerworld {
+
+left: 0em;
+height: 100%;
+width: 938px;
+border-right: 1px solid black;
+border-left: 1px solid black;
+font-family: Arial, Helvetica, sans-serif;
+}*/
+
+.innerworld {
+    flex: 1;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.statscontainer {
+    font: 13px Consolas, Monaco, monospace;
+    line-height: 10px;
+    color: #FFF;
+    /*position: absolute;*/
+    left: 75em;
+    top: 0em;
+    width: 300px;
+    /* height: 300px; */
+    padding-left: 10px;
+    padding-top: 10px;
+}
+.statscontainer > div:first-child {
+    top: 20px;
+}
+.statscontainer div {
+    border-bottom: 1px solid #444;
+
+}
+
+.statscontainer div, .statscontainer span {
+    display: block;
+    width: 300px;
+}
+
+.statscontainer .value {
+    text-align: right;
+}
+
+
+.feedbackcontainer {
+    /*position: absolute;*/
+}
+
+.feedback {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    padding-top: 20px;
+    line-height: 20px;
+    text-align: center;
+    background-color: rgba(44,44,44, 0.6);
+    z-index: 5;
+    overflow: hidden;
+}
+
+.movable {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+}
+
+.user {
+    color: white;
+    text-shadow: 0 1px 3px black;
+    z-index: 2;
+}
+
+.user.happy {
+}
+
+.user.frustrated {
+    color: yellow;
+}
+
+.user.disappointed {
+    color: red;
+}
+
+.user.leaving {
+    color: #eee;
+}
+
+.elevator {
+    background-color: #000000;
+    border: 2px solid white;
+    height: 46px;
+    z-index: 1;
+}
+
+.elevator .directionindicator {
+    position: absolute;
+    font-size: 10px;
+    top: 3px;
+}
+
+.elevator .directionindicator.directionindicatorup {
+    left: 2px;
+}
+
+.elevator .directionindicator.directionindicatordown {
+    right: 2px;
+}
+
+.elevator .directionindicator .fa{
+    color: #35383d;
+}
+
+.elevator .directionindicator .fa.activated{
+    color: #757f68;
+}
+
+.elevator .floorindicator {
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    font-size: 15px;
+    text-align: center;
+    color: #ffffff;
+}
+
+
+.elevator .buttonindicator {
+    display: inline-block;
+    position: absolute;
+    top: 20px;
+    width: 95%;
+    text-align: center;
+    font-size: 8px;
+    line-height: 8px;
+    color: #ffffff;
+}
+.elevator .buttonpress {
+    cursor: pointer;
+    margin: 0;
+    display: inline-block;
+}
+.elevator .buttonpress.activated {
+    color: #e37966;
+}
+
+.floor {
+    margin-left: 0em;
+    /*width: 78%;*/
+    height: 49px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-bottom: 1px solid #333;
+}
+
+.floor .buttonindicator {
+    cursor: pointer;
+    line-height: 50px;
+    padding-left: 50px;
+    color: rgba(255, 255, 255);
+}
+.floor .buttonindicator .activated {
+    color: #757f68;
+}
+
+.floor .floornumber {
+    position: absolute;
+    color: rgba(255, 255, 255);
+    font-size: 32px;
+    line-height: 50px;
+    padding-left: 10px;
+}
+
+
+.footer {
+    margin-top: 20px;
+}
+.footer h4 {
+    font-size: 13px;
+}
+
+.help {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.help p {
+    max-width: 75%;
+}
+
+.doctable {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: #555;
+    border: none;
+}
+
+.doctable th, .doctable td  {
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.doctable tr td:first-child {
+    padding-right: 5px;
+    color: #333;
+}
+
+.doctable td {
+    font: 13px Consolas, Monaco, monospace;
+}
+
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: "Open Sans";
+}
+
+.header h1.left {
+    font-family: "Open Sans";
+    font-size: 200%;
+}
+
+b {
+    font-weight: 700;
+}
+
+.injectionDiv {
+    height: 69vh;
+    margin-bottom: 5em;
+}
+
+#blocklyDiv {
+    height: 100vh;
+    width: 100%;
+}
+
+#optionsDiv {
+    width:25%;
+}
+
+#inputDiv {
+    height: 100vh;
+    width: 30%;
+}
+
+#importExport {
+    font-family: "Open Sans";
+}
+
+.ioLabel>.blocklyFlyoutLabelText {
+    font-style: italic;
+}
+
+#blocklyDiv.renderingDebug .blockRenderDebug {
+    display: block;
+}
+
+.playgroundToggleOptions {
+    list-style: none;
+    padding: 0;
+}
+
+.playgroundToggleOptions li {
+    margin-top: 1em;
+}
+
+.blockRenderDebug {
+    display: none;
+}
+
+.zelos-renderer .blocklyFlyoutButton .blocklyText {
+    font-size: 1.5rem;
+    background-color: #7f7f68;
+}
+
+.buttons_four {
+    margin-left: 5em;
+}
+
+body {
+    font-family: "Open Sans";
+}
+#sidebar-section {
+
+}
+.sidebar {
+    height: 100%;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    background-color: #E37966;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+.sidebar.close {
+    width: 0em;
+}
+
+.sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #FFF;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar p {
+    text-decoration: none;
+    font-size: 25px;
+    color: #FFF;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    color: #f1f1f1;
+}
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #E37966;
+    border: 1px solid #e37966;
+    color: white;
+    padding: 10px 15px;
+    height: 2.5em;
+    width: 10em;
+    position: absolute;
+    top: 4em;
+    right: 2em;
+}
+
+.openbtn:hover {
+    background-color: #CE8085;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+    width: 22em;
+}
+body {
+    display: flex;
+    width: 100%;
+}
+.container {
+    flex: 3;
+    height: 100%;
+    overflow-y: none;
+}
+#sidebar-section {
+    flex: 1;
+}
+#mySidebar {
+    padding: 0px 20px;
+}
+.challenge {
+    display: flex;
+    flex-direction: column;
+}
+.startstop {
+    display: none;
+}
+
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+    .sidebar {padding-top: 15px; width: 22em;}
+    .sidebar a {font-size: 18px;}
+}
+
+@media screen and (max-width: 1200px) {
+    body {
+        flex-direction: column;
+    }
+    .container {
+        margin-top: 3em;
+    }
+    #sidebar-section {
+        order: -1;
+        z-index: 999;
+        position: fixed;
+        width: 100%;
+    }
+    #mySidebar {
+        padding-top: 0;
+        display: flex;
+        justify-content: space-between;
+    }
+    #mySidebar p {
+        display: none;
+    }
+    .challenge {
+        flex-direction: row;
+        flex: 1;
+        justify-content: space-between;
+    }
+}
+

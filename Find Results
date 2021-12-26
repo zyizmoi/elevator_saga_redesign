@@ -1,0 +1,24 @@
+Searching 1042 files for ".blocklyToolboxDiv"
+
+/Users/weihanng/Desktop/elevator_problem/blockly_compressed.js:
+ 1359  Blockly.Toolbox.prototype.getClientRect=function(){if(!this.HtmlDiv)return null;var a=this.HtmlDiv.getBoundingClientRect(),b=a.top,c=b+a.height,d=a.left;a=d+a.width;return this.toolboxPosition==Blockly.TOOLBOX_AT_TOP?new Blockly.utils.Rect(-1E7,c,-1E7,1E7):this.toolboxPosition==Blockly.TOOLBOX_AT_BOTTOM?new Blockly.utils.Rect(b,1E7,-1E7,1E7):this.toolboxPosition==Blockly.TOOLBOX_AT_LEFT?new Blockly.utils.Rect(-1E7,1E7,-1E7,a):new Blockly.utils.Rect(-1E7,1E7,d,1E7)};
+ 1360  Blockly.Toolbox.prototype.refreshSelection=function(){var a=this.tree_.getSelectedItem();a&&a.contents&&this.flyout_.show(a.contents)};Blockly.Toolbox.prototype.selectFirstCategory=function(){this.tree_.getSelectedItem()||this.tree_.selectChild()};Blockly.Toolbox.TreeSeparator=function(a){Blockly.tree.TreeNode.call(this,null,"",a)};Blockly.utils.object.inherits(Blockly.Toolbox.TreeSeparator,Blockly.tree.TreeNode);
+ 1361: Blockly.Css.register([".blocklyToolboxDelete {",'cursor: url("<<<PATH>>>/handdelete.cur"), auto;',"}",".blocklyToolboxGrab {",'cursor: url("<<<PATH>>>/handclosed.cur"), auto;',"cursor: grabbing;","cursor: -webkit-grabbing;","}",".blocklyToolboxDiv {","background-color: #ddd;","overflow-x: visible;","overflow-y: auto;","position: absolute;","z-index: 70;","-webkit-tap-highlight-color: transparent;","}",".blocklyTreeRoot {","padding: 4px 0;","}",".blocklyTreeRoot:focus {","outline: none;","}",".blocklyTreeRow {",
+ 1362: "height: 22px;","line-height: 22px;","margin-bottom: 3px;","padding-right: 8px;","white-space: nowrap;","}",".blocklyHorizontalTree {","float: left;","margin: 1px 5px 8px 0;","}",".blocklyHorizontalTreeRtl {","float: right;","margin: 1px 0 8px 5px;","}",'.blocklyToolboxDiv[dir="RTL"] .blocklyTreeRow {',"margin-left: 8px;","}",".blocklyTreeRow:not(.blocklyTreeSelected):hover {","background-color: rgba(255, 255, 255, 0.2);","}",".blocklyTreeSeparator {","border-bottom: solid #e5e5e5 1px;","height: 0;",
+ 1363  "margin: 5px 0;","}",".blocklyTreeSeparatorHorizontal {","border-right: solid #e5e5e5 1px;","width: 0;","padding: 5px 0;","margin: 0 5px;","}",".blocklyTreeIcon {","background-image: url(<<<PATH>>>/sprites.png);","height: 16px;","vertical-align: middle;","width: 16px;","}",".blocklyTreeIconClosedLtr {","background-position: -32px -1px;","}",".blocklyTreeIconClosedRtl {","background-position: 0 -1px;","}",".blocklyTreeIconOpen {","background-position: -16px -1px;","}",".blocklyTreeSelected>.blocklyTreeIconClosedLtr {",
+ 1364  "background-position: -32px -17px;","}",".blocklyTreeSelected>.blocklyTreeIconClosedRtl {","background-position: 0 -17px;","}",".blocklyTreeSelected>.blocklyTreeIconOpen {","background-position: -16px -17px;","}",".blocklyTreeIconNone,",".blocklyTreeSelected>.blocklyTreeIconNone {","background-position: -48px -1px;","}",".blocklyTreeLabel {","cursor: default;","font: 16px sans-serif;","padding: 0 3px;","vertical-align: middle;","}",".blocklyToolboxDelete .blocklyTreeLabel {",'cursor: url("<<<PATH>>>/handdelete.cur"), auto;',
+
+/Users/weihanng/Desktop/elevator_problem/core/toolbox.js:
+  818  
+  819    /* Category tree in Toolbox. */
+  820:   '.blocklyToolboxDiv {',
+  821      'background-color: #7f7f68;',
+  822      'overflow-x: visible;',
+  ...
+  853    '}',
+  854  
+  855:   '.blocklyToolboxDiv[dir="RTL"] .blocklyTreeRow {',
+  856      'margin-left: 8px;',
+  857    '}',
+
+4 matches across 2 files

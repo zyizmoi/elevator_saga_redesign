@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Elevator Saga - the elevator programming game</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="font-awesome-4.1-1.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Oswald:400,700,300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="libs/codemirror/codemirror.css">
+  <link rel="stylesheet" href="libs/codemirror/themes/solarized.css">
+  <link rel="stylesheet" href="style1.css" type="text/css" media="all">
+
+  <script type="text/javascript" src="libs/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="libs/lodash.min.js"></script>
+  <script type="text/javascript" src="libs/riot.js"></script>
+
+  <script type="text/javascript" src="libs/codemirror/codemirror.js"></script>
+  <script type="text/javascript" src="libs/codemirror/addon/edit/closebrackets.js"></script>
+  <script type="text/javascript" src="libs/codemirror/mode/javascript/javascript.js"></script>
+
+  <script type="text/javascript" src="libs/unobservable.js"></script>
+
+  <script type="text/javascript" src="base.js"></script>
+  <script type="text/javascript" src="movable.js"></script>
+  <script type="text/javascript" src="floor.js"></script>
+  <script type="text/javascript" src="user.js"></script>
+  <script type="text/javascript" src="elevator.js"></script>
+  <script type="text/javascript" src="interfaces.js"></script>
+  <script type="text/javascript" src="world.js"></script>
+  <script type="text/javascript" src="presenters.js"></script>
+  <script type="text/javascript" src="challenges.js"></script>
+  <script type="text/javascript" src="fitness.js"></script>
+  <script type="text/javascript" src="app.js"></script>
+
+
+  <script src="../blockly_uncompressed.js"></script>
+  <script src="../generators/javascript.js"></script>
+  <script src="../generators/javascript/logic.js"></script>
+  <script src="../generators/javascript/loops.js"></script>
+  <script src="../generators/javascript/math.js"></script>
+  <script src="../generators/javascript/text.js"></script>
+  <script src="../generators/javascript/lists.js"></script>
+  <script src="../generators/javascript/colour.js"></script>
+  <script src="../generators/javascript/variables.js"></script>
+  <script src="../generators/javascript/variables_dynamic.js"></script>
+  <script src="../generators/javascript/procedures.js"></script>
+  <script src="../msg/messages.js"></script>
+  <script src="../blocks/logic.js"></script>
+  <script src="../blocks/loops.js"></script>
+  <script src="../blocks/math.js"></script>
+  <script src="../blocks/text.js"></script>
+  <script src="../blocks/lists.js"></script>
+  <script src="../blocks/colour.js"></script>
+  <script src="../blocks/variables.js"></script>
+  <script src="../blocks/variables_dynamic.js"></script>
+  <script src="../blocks/procedures.js"></script>
+  <script src="../trial/elevator_blocks.js"></script>
+  <script src="../trial/elevator_generators.js"></script>
+
+
+  <script type="text/template" id="user-template">
+    <i class="movable fa user fa-{u.displayType} {state}"></i>
+  </script>
+
+  <script type="text/template" id="floor-template">
+    <div class="floor" style="top: {yPosition}px">
+      <span class="floornumber">{level}</span>
+      <span class="buttonindicator">
+        <i class="fa fa-arrow-circle-up up"></i>
+        <i class="fa fa-arrow-circle-down down"></i>
+      </span>
+    </div>
+  </script>
+
+  <script type="text/template" id="elevator-template">
+    <div class="elevator movable" style="width: {e.width}px">
+      <span class="directionindicator directionindicatorup"><i class="fa fa-arrow-circle-up up activated"></i></span>
+      <span class="floorindicator"><span></span></span>
+      <span class="directionindicator directionindicatordown"><i class="fa fa-arrow-circle-down down activated"></i></span>
+      <span class="buttonindicator"></span>
+    </div>
+  </script>
+
+  <script type="text/template" id="elevatorbutton-template">
+    <span class="buttonpress">{floorNum}</span>
+  </script>
+
+  <script type="text/template" id="feedback-template">
+    <div class="feedback">
+      <h2 class="emphasis-color">{title}</h2>
+      <p class="emphasis-color">{message}</p>
+      <a href="{url}" class="emphasis-color">Next challenge <i class="fa fa-caret-right blink" style="text-decoration: blink"></i></a>
+    </div>
+  </script>
+
+  <script type="text/template" id="challenge-template">
+    <div class="left">
+      <h3>Challenge #{num}: {challenge.condition.description}</h3>
+    </div>
+    <button class="right startstop unselectable" style="width: 110px">{startButtonText}</button>
+    <h3 class="right">
+      <i class="fa fa-minus-square timescale_decrease unselectable"></i>
+      <span class="emphasis-color-multiply" >{timeScale}</span>
+      <i class="fa fa-plus-square timescale_increase unselectable" ></i>
+    </h3>
+  </script>
+
+  <script type="text/template" id="codestatus-template">
+    <h5 class="error" style="display: {errorDisplay}"><i class="fa fa-warning error-color"></i> Sorry, the elevator can't understand this! Try rearranging the blocks.</h5>
+  </script>
+
+  <script type="text/plain" id="default-elev-implementation">
+    {
+      init: function(elevators, floors) {
+      var elevator = elevators[0]; // Let's use the first elevator
+
+      // Whenever the elevator is idle (has no more queued destinations) ...
+      elevator.on("idle", function() {
+      // let's go to all the floors (or did we forget one?)
+      elevator.goToFloor(0);
+      elevator.goToFloor(1);
+    });
+  },
+  update: function(dt, elevators, floors) {
+  // We normally don't need to do anything here
+}
+}
+</script>
+
+<script type="text/plain" id="devtest-elev-implementation">
+  {
+    init: function(elevators, floors) {
+    var selectElevatorForFloorPickup = function(floorNum) {
+    return _.max(elevators, function(e) {
+    return (_.contains(e.destinationQueue, floorNum) ? 4 : 0) +
+    (-e.destinationQueue.length*e.destinationQueue.length) +
+    (-e.loadFactor()*e.loadFactor() * 3);
+  });
+};
+
+_.each(floors, function(floor) {
+floor.on("down_button_pressed up_button_pressed", function() {
+var elevator = selectElevatorForFloorPickup(floor.level);
+if(!_.contains(elevator.destinationQueue, floor.level)) {
+elevator.goToFloor(floor.level);
+}
+});
+});
+_.each(elevators, function(elevator) {
+elevator.on("floor_button_pressed", function(floorNum) {
+elevator.goToFloor(floorNum);
+});
+elevator.on("idle", function() {
+elevator.goToFloor(0);
+});
+});
+},
+update: function(dt, elevators, floors) {
+}
+}
+</script>
+
+<script>
+// Custom requires for the playground.
+// Rendering.
+goog.require('Blockly.blockRendering.Debug');
+goog.require('Blockly.minimalist.Renderer');
+goog.require('Blockly.Themes.Modern');
+goog.require('Blockly.Themes.Zelos');
+goog.require('Blockly.thrasos.Renderer');
+goog.require('Blockly.zelos.Renderer');
+
+// Other.
+goog.require('Blockly.WorkspaceCommentSvg');
+goog.require('Blockly.WorkspaceCommentSvg.render');
+</script>
+
+
+
+
+</head>
+
+
+<body onload="start()">
+  <div class="container">
+    <div class="header">
+      <h1 class="left"><b>Elevator Saga </b></h1>
+    </div>
+    <noscript>
+      <h2>Your browser does not appear to support JavaScript. This page contains a browser-based programming game implemented in JavaScript.</h2>
+    </noscript>
+
+
+
+    <div class="world">
+      <div class="feedbackcontainer"></div>
+      <div class="innerworld">
+      </div>
+      <div class="statscontainer">
+        <div><span class="key">Transported</span><span class="value transportedcounter"></span></div>
+        <div><span class="key">Elapsed time</span><span class="value elapsedtime"></span></div>
+        <div><span class="key">Transported/s</span><span class="value transportedpersec"></span></div>
+        <div><span class="key">Avg waiting time</span><span class="value avgwaittime"></span></div>
+        <div><span class="key">Max waiting time</span><span class="value maxwaittime"></span></div>
+        <div><span class="key" title="Number of floors that have been travelled by elevators">Moves</span><span class="value movecount"></span></div>
+      </div>
+    </div>
+    <div class="codestatus"></div>
+
+    <div id="optionsDiv">
+      <form id="options">
+        <select name="toolbox" onchange="document.forms.options.submit()">
+          <option value="level1">A rudimentary solution</option>
+          <option value="level2">An improved solution</option>
+          <option value="level3">Complete solution</option>
+        </select>
+      </form>
+      <br>
+    </div>
+
+    <div id="blocklyDiv"></div>
+
+    <div id="inputDiv" style="display: none">
+      <h1>Workspace</h1>
+
+      <p>
+        <input type="button" style="background-color: #7f7f68; color: #FFFFFF; display: none;" value="Export to XML" onclick="toXml()">
+        <input style="background-color: #7f7f68; color: #FFFFFF; display: none;" type="button" value="Import from XML" onclick="fromXml()" id="import">
+        <input style="background-color: #7f7f68; color: #FFFFFF; display: none;" type="button" value="To JavaScript" onclick="toCode('JavaScript')">
+        <br/>
+        <br/>
+        <textarea id="importExport" style="width: 100%; height: 315px"
+        onchange="taChange();" onkeyup="taChange()"></textarea>
+      </p>
+    </div>
+    
+    <div id="codem" style="visibility:hidden">
+      <div class="code"></div>
+      <div style="clear:both;"></div>
+      <div>
+        <textarea id="code" name="Code"></textarea>
+      </div>
+    </div>
+  </div>
+  
+    <div id="sidebar-section">
+      <div id="mySidebar" class="sidebar">
+        <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a> -->
+        <p> Challenges </p>
+        <div class="challenge"></div>
+        <div class="button_four">
+          <button id="button_apply" style="display: none">Apply</button>
+          <button id="button_save" style="display: none">Save</button>
+          <button id="to_javascript">Run Program</button>
+
+          <button id="button_reset" style="display: none">Reset</button>
+          <button id="button_resetundo" style="display: none">Undo reset</button>
+          <span id="save_message" style="display: none"></span>
+          <span id="fitness_message" style="display: none"></span>
+        </div>
+        <div class="show/hide">
+          <button id="show/hide code" onclick="showhide()">Show/Hide Code</button>
+        </div>
+      </div>
+
+    <!-- <div id="main">
+      <button class="openbtn" onclick="openNav()">☰ Open Sidebar</button>  
+    </div> -->
+  </div>
+
+
+  <!--rudimentary solution (1 elevator)-->
+  <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox-level1" style="display: none">
+    <block type="go_to_floor_specific_basic"></block>
+    <block type="math_number"></block>
+    <block type="do_when_idle"></block>
+  </xml>
+
+  <!--an improved solution (multiple elevators)-->
+  <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox-level2" style="display: none">
+    <block type="go_to_floor_specific_basic"></block>
+    <block type="go_to_floor_specific_target"></block>
+    <block type="when_passenger_presses"></block>
+    <block type="updown_button_pressed"></block>
+    <block type="scan_floors"></block>
+    <block type="for_each_elevator"></block>
+    <block type="math_number"></block>
+    <block type="do_when_idle"></block>
+    <block type="find_idle_elevator_improved"></block>
+
+  </xml>
+
+  <!-- blocks for basic solution -->
+  <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox-level3" style="display: none">
+    <block type="go_to_floor_specific_basic"></block>
+    <block type="math_number">
+      <field name="NUM">0</field>
+    </block>
+    <block type="elevator_frame_basic"></block>
+    <block type="scan_floors"></block>
+    <block type="for_each_elevator"></block>
+    
+    <block type="updown_button_pressed"></block>
+    <block type="do_when_idle"></block>
+    <block type="when_passenger_presses"></block>
+    <block type="when_passing_floor"></block>
+    <block type="when_stopped"></block>
+
+    <block type="find_idle_elevator"></block>
+    <block type="get_pressed_floors"></block>
+    <block type="choose_first_button"></block>
+    <block type="go_to_floor_target"></block>
+    <block type="if_elevator_stops"></block>
+    <block type="switch"></block>
+    <block type="options"></block>
+    <block type="toggle_indicator"></block>
+
+    <block type="remove_floor_from_queue"></block>
+    <block type="go_to_floor_queue"></block>
+      
+  </xml>
+
+  <script>
+  'use strict';
+  var workspace = null;
+
+  function start() {
+
+// Parse the URL arguments.
+var match = location.search.match(/dir=([^&]+)/);
+var rtl = match && match[1] == 'rtl';
+var toolbox = getToolboxElement();
+setToolboxDropdown();
+match = location.search.match(/side=([^&]+)/);
+var autoimport = !!location.search.match(/autoimport=([^&]+)/);
+// Create main workspace.
+workspace = Blockly.inject('blocklyDiv',
+{
+  comments: true,
+  collapse: true,
+  disable: true,
+  grid:
+  {
+    spacing: 25,
+    length: 3,
+    colour: '#ccc',
+    snap: true
+  },
+  horizontalLayout: false,
+  maxBlocks: Infinity,
+  maxInstances: {'test_basic_limit_instances': 3},
+  maxTrashcanContents: 256,
+  media: '../media/',
+  oneBasedIndex: true,
+  readOnly: false,
+  rtl: rtl,
+  move: {
+    scrollbars: true,
+    drag: true,
+    wheel: false,
+  },
+  toolbox: toolbox,
+  toolboxPosition: 'start',
+  renderer: 'geras',
+  zoom:
+  {
+    controls: true,
+    wheel: true,
+    startScale: 1.0,
+    maxScale: 4,
+    minScale: 0.25,
+    scaleSpeed: 1.1
+  }
+});
+var defaultXml =
+'<xml xmlns="https://developers.google.com/blockly/xml" id="workspace-blocks" style="display: none">' +
+' <block type="elevator_frame_basic">' +
+'    <field name="NAME">Name your program!</field>' +
+'  </block>' +
+'</xml>';
+
+var xml = Blockly.Xml.textToDom(defaultXml);
+Blockly.Xml.domToWorkspace(xml, workspace);
+workspace.configureContextMenu = configureContextMenu;
+addToolboxButtonCallbacks();
+// Restore previously displayed text.
+if (sessionStorage) {
+  var text = sessionStorage.getItem('textarea');
+  if (text) {
+    document.getElementById('importExport').value = text;
+  }
+// Restore event logging state.
+var state = sessionStorage.getItem('logEvents');
+logEvents(Boolean(Number(state)));
+} else {
+// MSIE 11 does not support sessionStorage on file:// URLs.
+logEvents(false);
+}
+taChange();
+if (autoimport) {
+  fromXml();
+}
+/*           workspace.toolbox_.flyout_.autoClose = false;
+*/
+}
+
+function addToolboxButtonCallbacks() {
+  var addAllBlocksToWorkspace = function(button) {
+    var workspace = button.getTargetWorkspace();
+    var blocks = button.workspace_.getTopBlocks();
+    for(var i = 0, block; block = blocks[i]; i++) {
+      var xml = Blockly.utils.xml.createElement('xml');
+      xml.appendChild(Blockly.Xml.blockToDom(block));
+      Blockly.Xml.appendDomToWorkspace(xml, workspace);
+    }
+  };
+  var randomizeLabelText = function(button) {
+    var blocks = button.targetWorkspace_
+    .getBlocksByType('test_fields_label_serializable');
+    var possible = 'AB';
+    for (var i = 0, block; block = blocks[i]; i++) {
+      var text = '';
+      for (var j = 0; j < 4; j++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      block.setFieldValue(text, 'LABEL');
+    }
+  };
+  var setRandomStyle = function(button) {
+    var blocks = button.workspace_.getAllBlocks(false);
+    var styles =
+    Object.keys(workspace.getRenderer().getConstants().blockStyles);
+    styles.splice(styles.indexOf(blocks[0].getStyleName()), 1);
+    var style = styles[Math.floor(Math.random() * styles.length)];
+    for(var i = 0, block; block = blocks[i]; i++) {
+      block.setStyle(style);
+    }
+  };
+  var toggleEnabled = function(button) {
+    var blocks = button.workspace_.getAllBlocks(false);
+    for(var i = 0, block; block = blocks[i]; i++) {
+      block.setEnabled(!block.isEnabled());
+    }
+  };
+  var toggleShadow = function(button) {
+    var blocks = button.workspace_.getAllBlocks(false);
+    for(var i = 0, block; block = blocks[i]; i++) {
+      block.setShadow(!block.isShadow());
+    }
+  };
+  var toggleCollapsed = function(button) {
+    var blocks = button.workspace_.getAllBlocks(false);
+    for(var i = 0, block; block = blocks[i]; i++) {
+      block.setCollapsed(!block.isCollapsed());
+    }
+  };
+  var setInput = function(button) {
+    Blockly.prompt('Input text to set.', 'ab', function(input) {
+      var blocks = button.getTargetWorkspace().getAllBlocks(false);
+      for(var i = 0, block; block = blocks[i]; i++) {
+        if (block.getField('INPUT')) {
+          block.setFieldValue(input, 'INPUT');
+        }
+      }
+    })
+  };
+  var changeImage = function(button) {
+    var blocks = button.workspace_.getBlocksByType('test_fields_image');
+    var possible = 'abcdefghijklm';
+    var image = possible.charAt(Math.floor(Math.random() * possible.length));
+    var src = 'https://blockly-demo.appspot.com/static/tests/media/'
+    + image + '.png';
+    for (var i = 0, block; block = blocks[i]; i++) {
+      var imageField = block.getField('IMAGE');
+      imageField.setValue(src);
+    }
+  };
+  var addVariables = function(button) {
+    workspace.createVariable('1b', '', '1B');
+    workspace.createVariable('1c', '', '1C');
+    workspace.createVariable('2a', '', '2A');
+    workspace.createVariable('2b', '', '2B');
+    workspace.createVariable('2c', '', '2C');
+  };
+
+  workspace.registerButtonCallback(
+    'addVariables', addVariables);
+  workspace.registerButtonCallback(
+    'changeImage', changeImage);
+  workspace.registerButtonCallback(
+    'addAllBlocksToWorkspace', addAllBlocksToWorkspace);
+  workspace.registerButtonCallback(
+    'setInput', setInput);
+  workspace.registerButtonCallback(
+    'setRandomStyle', setRandomStyle);
+  workspace.registerButtonCallback(
+    'toggleEnabled', toggleEnabled);
+  workspace.registerButtonCallback(
+    'toggleShadow', toggleShadow);
+  workspace.registerButtonCallback(
+    'toggleCollapsed', toggleCollapsed);
+  workspace.registerButtonCallback(
+    'randomizeLabelText', randomizeLabelText);
+  workspace.registerButtonCallback(
+    'addDynamicOption', Blockly.TestBlocks.addDynamicDropdownOption);
+  workspace.registerButtonCallback(
+    'removeDynamicOption', Blockly.TestBlocks.removeDynamicDropdownOption);
+  workspace.registerButtonCallback(
+    'insertConnectionRows', Blockly.TestBlocks.insertConnectionRows);
+  workspace.registerButtonCallback(
+    'insertConnectionStacks', Blockly.TestBlocks.insertConnectionStacks);
+  workspace.registerButtonCallback(
+    'insertConnectionStatements',
+    Blockly.TestBlocks.insertConnectionStatements);
+}
+
+function setBackgroundColour() {
+// Set background colour to differentiate server vs local copy.
+if (location.protocol == 'file:') {
+  var lilac = '#d6d6ff';
+  document.body.style.backgroundColor = lilac;
+}
+}
+
+function getToolboxSuffix() {
+  var match = location.search.match(/toolbox=([^&]+)/);
+// Default to the basic toolbox with categories and untyped variables,
+// but override that if the toolbox type is set in the URL.
+return (match ? match[1] : 'level1');
+}
+
+function getToolboxElement() {
+  var toolboxSuffix = getToolboxSuffix();
+  return document.getElementById('toolbox-' + toolboxSuffix);
+}
+
+function setToolboxDropdown() {
+  var toolboxNames = [
+  'toolbox-level1',
+  'toolbox-level2',
+  'toolbox-level3'
+  ];
+  var toolboxSuffix = getToolboxSuffix();
+  document.forms.options.elements.toolbox.selectedIndex =
+  toolboxNames.indexOf('toolbox-' + toolboxSuffix);
+}
+
+function toXml() {
+  var output = document.getElementById('importExport');
+  var xml = Blockly.Xml.workspaceToDom(workspace);
+  output.value = Blockly.Xml.domToPrettyText(xml);
+  output.focus();
+  output.select();
+  taChange();
+}
+
+function fromXml() {
+  var input = document.getElementById('importExport');
+  if (!input.value) {
+    return;
+  }
+  var xml = Blockly.Xml.textToDom(input.value);
+  Blockly.Xml.domToWorkspace(xml, workspace);
+  taChange();
+}
+
+function toCode(lang) {
+  var output = document.getElementById('importExport');
+  output.value = Blockly[lang].workspaceToCode(workspace);
+
+// Set the text value for the block code into the importExport function.
+$("#importExport").text(output.value);
+taChange();
+}
+
+function showhide() {
+  var x = document.getElementById("codem");
+  if (x.style.visibility === "hidden") {
+    x.style.visibility = "visible";
+  } else {
+    x.style.visibility = "hidden";
+  }
+}
+
+function ourApply() {
+  toCode('JavaScript');
+  $("#button_save").click();
+  $("#button_apply").click();
+  //window.scrollTo(0, 0);
+}
+
+document.getElementById("to_javascript").addEventListener("click", ourApply);
+
+
+// Disable the "Import from XML" button if the XML is invalid.
+// Preserve text between page reloads.
+function taChange() {
+  var textarea = document.getElementById('importExport');
+  if (sessionStorage) {
+    sessionStorage.setItem('textarea', textarea.value);
+  }
+  var valid = true;
+  try {
+    Blockly.Xml.textToDom(textarea.value);
+  } catch (e) {
+    valid = false;
+  }
+  document.getElementById('import').disabled = !valid;
+}
+
+function logEvents(state) {
+  var checkbox = document.getElementById('logCheck');
+  checkbox.checked = state;
+  if (sessionStorage) {
+    sessionStorage.setItem('logEvents', Number(state));
+  }
+  if (state) {
+    workspace.addChangeListener(logger);
+  } else {
+    workspace.removeChangeListener(logger);
+  }
+}
+
+function configureContextMenu(menuOptions, e) {
+  var screenshotOption = {
+    text: 'Download Screenshot',
+    enabled: workspace.getTopBlocks().length,
+    callback: function() {
+      Blockly.downloadScreenshot(workspace);
+    }
+  };
+  menuOptions.push(screenshotOption);
+
+// Adds a default-sized workspace comment to the workspace.
+menuOptions.push(Blockly.ContextMenu.workspaceCommentOption(workspace, e));
+}
+
+function logger(e) {
+  console.log(e);
+}
+
+</script>
+
+  <script>
+    function openNav() {
+      document.getElementById("mySidebar").classList.toggle('close');
+    }
+
+    function closeNav() {
+      document.getElementById("mySidebar").classList.toggle('close');
+    }
+  </script>
+
+</body>
+</html>
